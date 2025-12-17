@@ -32,26 +32,39 @@ export function OnboardingCard({ onDismiss, onOpenApiKeyModal }: OnboardingCardP
 
         {/* Steps */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <div className="bg-white bg-opacity-10 rounded-xl p-4 backdrop-blur">
+          <div className="bg-white/95 rounded-xl p-4 shadow-lg backdrop-blur-sm transform hover:scale-105 transition duration-200"
+          >
             <div className="flex items-center mb-2">
-              <div className="w-8 h-8 bg-white text-purple-600 rounded-full flex items-center justify-center font-bold text-sm mr-3">1</div>
-              <h3 className="font-semibold">Get Your API Key</h3>
+              <div className="w-8 h-8 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center font-bold text-sm mr-3">
+                1
+              </div>
+              <h3 className="font-bold text-gray-900">Get Your API Key</h3>
             </div>
-            <p className="text-purple-100 text-sm">Create a free Gemini API key from Google AI Studio. It takes less than 1 minute!</p>
+            <p className="text-gray-600 text-sm">
+              Create a free Gemini API key from Google AI Studio. It takes less than 1 minute!
+            </p>
           </div>
-          <div className="bg-white bg-opacity-10 rounded-xl p-4 backdrop-blur">
+          <div className="bg-white/95 rounded-xl p-4 shadow-lg backdrop-blur-sm transform hover:scale-105 transition duration-200">
             <div className="flex items-center mb-2">
-              <div className="w-8 h-8 bg-white text-purple-600 rounded-full flex items-center justify-center font-bold text-sm mr-3">2</div>
-              <h3 className="font-semibold">Upload Course</h3>
+              <div className="w-8 h-8 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center font-bold text-sm mr-3">
+                2
+              </div>
+              <h3 className="font-bold text-gray-900">Upload Course</h3>
             </div>
-            <p className="text-purple-100 text-sm">Drop your PDF, slides, or notes. Our AI will process and understand your content.</p>
+            <p className="text-gray-600 text-sm">
+              Drop your PDF, slides, or notes. Our AI will process and understand your content.
+            </p>
           </div>
-          <div className="bg-white bg-opacity-10 rounded-xl p-4 backdrop-blur">
+          <div className="bg-white/95 rounded-xl p-4 shadow-lg backdrop-blur-sm transform hover:scale-105 transition duration-200">
             <div className="flex items-center mb-2">
-              <div className="w-8 h-8 bg-white text-purple-600 rounded-full flex items-center justify-center font-bold text-sm mr-3">3</div>
-              <h3 className="font-semibold">Learn Smarter</h3>
+              <div className="w-8 h-8 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center font-bold text-sm mr-3">
+                3
+              </div>
+              <h3 className="font-bold text-gray-900">Learn Smarter</h3>
             </div>
-            <p className="text-purple-100 text-sm">Listen to audio summaries, read key points, and ask questions about your material.</p>
+            <p className="text-gray-600 text-sm">
+              Listen to audio summaries, read key points, and ask questions about your material.
+            </p>
           </div>
         </div>
 
@@ -68,7 +81,7 @@ export function OnboardingCard({ onDismiss, onOpenApiKeyModal }: OnboardingCardP
             href="https://aistudio.google.com/app/apikey"
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-white bg-opacity-20 px-5 py-2.5 rounded-xl font-medium hover:bg-opacity-30 transition flex items-center"
+            className="bg-black/30 border border-white/30 px-5 py-2.5 rounded-xl font-medium text-white hover:bg-black/40 transition flex items-center shadow-sm"
           >
             <ExternalLink className="w-4 h-4 mr-2" />
             Get Free API Key
