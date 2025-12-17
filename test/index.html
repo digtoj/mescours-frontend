@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CourseAI - Smart Study Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        .chat-bubble { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .pulse { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="gradient-bg text-white p-2 rounded-lg mr-3">
+                        <i class="fas fa-graduation-cap text-xl"></i>
+                    </div>
+                    <span class="text-xl font-bold text-gray-800">CourseAI</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button id="apiKeyBtn" class="flex items-center px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 border border-gray-200 rounded-lg hover:border-gray-300 transition">
+                        <i class="fas fa-key mr-2 text-purple-500"></i>
+                        <span id="apiKeyStatus">Add API Key</span>
+                    </button>
+                    <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-user text-purple-600 text-sm"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Onboarding Card -->
+        <div id="onboardingCard" class="mb-8 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-500 rounded-2xl p-6 text-white relative overflow-hidden">
+            <!-- Background decoration -->
+            <div class="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+            <div class="absolute bottom-0 left-0 w-32 h-32 bg-white opacity-5 rounded-full translate-y-1/2 -translate-x-1/2"></div>
+            
+            <!-- Close button -->
+            <button onclick="dismissOnboarding()" class="absolute top-4 right-4 w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30 transition">
+                <i class="fas fa-times text-sm"></i>
+            </button>
+            
+            <div class="relative">
+                <div class="flex items-center mb-4">
+                    <div class="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center mr-3">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h2 class="text-xl font-bold">Welcome to CourseAI! 🎓</h2>
+                </div>
+                
+                <p class="text-purple-100 mb-6 max-w-2xl">Transform your study materials into interactive learning experiences with AI-powered summaries, audio explanations, and smart Q&A.</p>
+                
+                <!-- Steps -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="bg-white bg-opacity-10 rounded-xl p-4 backdrop-blur">
+                        <div class="flex items-center mb-2">
+                            <div class="w-8 h-8 bg-white text-purple-600 rounded-full flex items-center justify-center font-bold text-sm mr-3">1</div>
+                            <h3 class="font-semibold">Get Your API Key</h3>
+                        </div>
+                        <p class="text-purple-100 text-sm">Create a free Gemini API key from Google AI Studio. It takes less than 1 minute!</p>
+                    </div>
+                    <div class="bg-white bg-opacity-10 rounded-xl p-4 backdrop-blur">
+                        <div class="flex items-center mb-2">
+                            <div class="w-8 h-8 bg-white text-purple-600 rounded-full flex items-center justify-center font-bold text-sm mr-3">2</div>
+                            <h3 class="font-semibold">Upload Course</h3>
+                        </div>
+                        <p class="text-purple-100 text-sm">Drop your PDF, slides, or notes. Our AI will process and understand your content.</p>
+                    </div>
+                    <div class="bg-white bg-opacity-10 rounded-xl p-4 backdrop-blur">
+                        <div class="flex items-center mb-2">
+                            <div class="w-8 h-8 bg-white text-purple-600 rounded-full flex items-center justify-center font-bold text-sm mr-3">3</div>
+                            <h3 class="font-semibold">Learn Smarter</h3>
+                        </div>
+                        <p class="text-purple-100 text-sm">Listen to audio summaries, read key points, and ask questions about your material.</p>
+                    </div>
+                </div>
+                
+                <!-- CTA Buttons -->
+                <div class="flex flex-wrap items-center gap-3">
+                    <button onclick="openApiKeyModal()" class="bg-white text-purple-600 px-5 py-2.5 rounded-xl font-semibold hover:bg-opacity-90 transition flex items-center">
+                        <i class="fas fa-key mr-2"></i>
+                        Add Your Gemini Key
+                    </button>
+                    <a href="https://aistudio.google.com/app/apikey" target="_blank" class="bg-white bg-opacity-20 px-5 py-2.5 rounded-xl font-medium hover:bg-opacity-30 transition flex items-center">
+                        <i class="fas fa-external-link-alt mr-2"></i>
+                        Get Free API Key
+                    </a>
+                    <button onclick="dismissOnboarding()" class="text-purple-200 hover:text-white px-4 py-2 transition text-sm">
+                        I'll do this later
+                    </button>
+                </div>
+                
+                <!-- Privacy note -->
+                <div class="mt-4 flex items-center text-purple-200 text-xs">
+                    <i class="fas fa-shield-alt mr-2"></i>
+                    <span>Your API key is stored locally on your device and never sent to our servers. Your data stays private.</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Header Section -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">My Courses</h1>
+            <p class="text-gray-500">Upload your course materials and let AI help you study</p>
+        </div>
+
+        <!-- Upload Section -->
+        <div id="uploadSection" class="mb-8">
+            <div class="border-2 border-dashed border-gray-300 rounded-2xl p-12 text-center hover:border-purple-400 transition-colors cursor-pointer bg-white">
+                <div class="gradient-bg w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-cloud-upload-alt text-white text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-700 mb-2">Upload Course Material</h3>
+                <p class="text-gray-500 mb-4">Drag & drop your PDF, or click to browse</p>
+                <button class="gradient-bg text-white px-6 py-2 rounded-lg font-medium hover:opacity-90 transition">
+                    Select File
+                </button>
+            </div>
+        </div>
+
+        <!-- Course Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            
+            <!-- Course Card 1 -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition cursor-pointer" onclick="openCourse()">
+                <div class="h-32 gradient-bg flex items-center justify-center">
+                    <i class="fas fa-brain text-white text-4xl opacity-50"></i>
+                </div>
+                <div class="p-5">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-medium text-purple-600 bg-purple-50 px-2 py-1 rounded">Machine Learning</span>
+                        <span class="text-xs text-gray-400">2 days ago</span>
+                    </div>
+                    <h3 class="font-semibold text-gray-800 mb-1">Neural Networks Basics</h3>
+                    <p class="text-sm text-gray-500 mb-4">Introduction to deep learning and neural network architectures</p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center text-sm text-gray-400">
+                            <i class="fas fa-file-pdf mr-1"></i>
+                            <span>24 pages</span>
+                        </div>
+                        <div class="flex space-x-2">
+                            <span class="w-8 h-8 bg-green-50 rounded-full flex items-center justify-center" title="Audio Ready">
+                                <i class="fas fa-headphones text-green-500 text-sm"></i>
+                            </span>
+                            <span class="w-8 h-8 bg-blue-50 rounded-full flex items-center justify-center" title="5 Questions">
+                                <i class="fas fa-comments text-blue-500 text-sm"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Course Card 2 -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition cursor-pointer">
+                <div class="h-32 bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center">
+                    <i class="fas fa-database text-white text-4xl opacity-50"></i>
+                </div>
+                <div class="p-5">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded">Databases</span>
+                        <span class="text-xs text-gray-400">1 week ago</span>
+                    </div>
+                    <h3 class="font-semibold text-gray-800 mb-1">SQL Fundamentals</h3>
+                    <p class="text-sm text-gray-500 mb-4">Complete guide to SQL queries and database design</p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center text-sm text-gray-400">
+                            <i class="fas fa-file-pdf mr-1"></i>
+                            <span>42 pages</span>
+                        </div>
+                        <div class="flex space-x-2">
+                            <span class="w-8 h-8 bg-green-50 rounded-full flex items-center justify-center">
+                                <i class="fas fa-headphones text-green-500 text-sm"></i>
+                            </span>
+                            <span class="w-8 h-8 bg-blue-50 rounded-full flex items-center justify-center">
+                                <i class="fas fa-comments text-blue-500 text-sm"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Course Card 3 - Processing -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="h-32 bg-gradient-to-br from-orange-400 to-pink-500 flex items-center justify-center">
+                    <i class="fas fa-react text-white text-4xl opacity-50"></i>
+                </div>
+                <div class="p-5">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-medium text-orange-600 bg-orange-50 px-2 py-1 rounded">Frontend</span>
+                        <span class="text-xs text-gray-400">Just now</span>
+                    </div>
+                    <h3 class="font-semibold text-gray-800 mb-1">React Advanced Patterns</h3>
+                    <p class="text-sm text-gray-500 mb-4">Hooks, Context, and performance optimization</p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center text-sm text-gray-400">
+                            <i class="fas fa-file-pdf mr-1"></i>
+                            <span>18 pages</span>
+                        </div>
+                        <div class="flex items-center text-sm text-purple-500">
+                            <i class="fas fa-spinner fa-spin mr-2"></i>
+                            <span>Processing...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Course Detail Modal -->
+    <div id="courseModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-5xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+            
+            <!-- Modal Header -->
+            <div class="gradient-bg p-6 text-white">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <span class="text-xs font-medium bg-white bg-opacity-20 px-2 py-1 rounded">Machine Learning</span>
+                        <h2 class="text-2xl font-bold mt-2">Neural Networks Basics</h2>
+                        <p class="text-purple-100 text-sm mt-1">24 pages • Uploaded 2 days ago</p>
+                    </div>
+                    <button onclick="closeModal()" class="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30 transition">
+                        <i class="fas fa-times text-white"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Modal Content -->
+            <div class="flex-1 overflow-hidden flex">
+                
+                <!-- Left Side - Audio & Summary -->
+                <div class="w-1/2 border-r border-gray-100 p-6 overflow-y-auto">
+                    
+                    <!-- Audio Player -->
+                    <div class="mb-6">
+                        <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+                            <i class="fas fa-headphones mr-2 text-purple-500"></i>Audio Summary
+                        </h3>
+                        <div class="bg-gray-50 rounded-xl p-4">
+                            <div class="flex items-center space-x-4">
+                                <button id="playBtn" onclick="togglePlay()" class="w-14 h-14 gradient-bg rounded-full flex items-center justify-center text-white hover:opacity-90 transition shadow-lg">
+                                    <i class="fas fa-play text-lg ml-1"></i>
+                                </button>
+                                <div class="flex-1">
+                                    <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+                                        <div class="h-full gradient-bg w-1/3 rounded-full"></div>
+                                    </div>
+                                    <div class="flex justify-between mt-1 text-xs text-gray-400">
+                                        <span>2:34</span>
+                                        <span>8:12</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between mt-4 pt-4 border-t border-gray-200">
+                                <div class="flex space-x-3">
+                                    <button class="text-gray-400 hover:text-gray-600"><i class="fas fa-backward"></i></button>
+                                    <button class="text-gray-400 hover:text-gray-600"><i class="fas fa-forward"></i></button>
+                                </div>
+                                <div class="flex items-center space-x-2 text-gray-400">
+                                    <i class="fas fa-volume-up"></i>
+                                    <div class="w-20 h-1 bg-gray-200 rounded-full">
+                                        <div class="w-3/4 h-full bg-purple-400 rounded-full"></div>
+                                    </div>
+                                </div>
+                                <button class="text-gray-400 hover:text-gray-600 text-sm">1x</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Key Points -->
+                    <div>
+                        <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+                            <i class="fas fa-lightbulb mr-2 text-yellow-500"></i>Key Points
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="bg-gray-50 rounded-lg p-3 border-l-4 border-purple-500">
+                                <p class="text-sm text-gray-700"><strong>Neurons & Layers:</strong> Neural networks consist of input, hidden, and output layers, each containing neurons that process information.</p>
+                            </div>
+                            <div class="bg-gray-50 rounded-lg p-3 border-l-4 border-blue-500">
+                                <p class="text-sm text-gray-700"><strong>Activation Functions:</strong> ReLU, Sigmoid, and Tanh determine whether a neuron should be activated based on input.</p>
+                            </div>
+                            <div class="bg-gray-50 rounded-lg p-3 border-l-4 border-green-500">
+                                <p class="text-sm text-gray-700"><strong>Backpropagation:</strong> The algorithm that adjusts weights by calculating gradients and minimizing loss function.</p>
+                            </div>
+                            <div class="bg-gray-50 rounded-lg p-3 border-l-4 border-orange-500">
+                                <p class="text-sm text-gray-700"><strong>Learning Rate:</strong> A hyperparameter controlling how much to adjust weights during training.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Side - Q&A Chat -->
+                <div class="w-1/2 flex flex-col">
+                    <div class="p-4 border-b border-gray-100">
+                        <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide">
+                            <i class="fas fa-comments mr-2 text-blue-500"></i>Ask Questions
+                        </h3>
+                    </div>
+                    
+                    <!-- Chat Messages -->
+                    <div class="flex-1 overflow-y-auto p-4 space-y-4" id="chatMessages">
+                        
+                        <!-- User Message -->
+                        <div class="chat-bubble flex justify-end">
+                            <div class="bg-purple-500 text-white rounded-2xl rounded-br-md px-4 py-2 max-w-[80%]">
+                                <p class="text-sm">What is the difference between CNN and RNN?</p>
+                            </div>
+                        </div>
+
+                        <!-- AI Response -->
+                        <div class="chat-bubble flex justify-start">
+                            <div class="bg-gray-100 rounded-2xl rounded-bl-md px-4 py-3 max-w-[80%]">
+                                <p class="text-sm text-gray-700 mb-2">Based on your course material:</p>
+                                <p class="text-sm text-gray-700"><strong>CNN (Convolutional Neural Networks)</strong> are designed for spatial data like images. They use convolutional layers to detect patterns.</p>
+                                <p class="text-sm text-gray-700 mt-2"><strong>RNN (Recurrent Neural Networks)</strong> are designed for sequential data like text or time series. They have memory to process sequences.</p>
+                                <div class="mt-3 pt-2 border-t border-gray-200 flex items-center text-xs text-gray-400">
+                                    <i class="fas fa-book mr-1"></i>
+                                    <span>Referenced from page 12-15</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- User Message -->
+                        <div class="chat-bubble flex justify-end">
+                            <div class="bg-purple-500 text-white rounded-2xl rounded-br-md px-4 py-2 max-w-[80%]">
+                                <p class="text-sm">Can you explain backpropagation simply?</p>
+                            </div>
+                        </div>
+
+                        <!-- AI Response -->
+                        <div class="chat-bubble flex justify-start">
+                            <div class="bg-gray-100 rounded-2xl rounded-bl-md px-4 py-3 max-w-[80%]">
+                                <p class="text-sm text-gray-700">Think of backpropagation like learning from mistakes:</p>
+                                <ol class="text-sm text-gray-700 mt-2 ml-4 list-decimal space-y-1">
+                                    <li>Network makes a prediction</li>
+                                    <li>We compare it to the correct answer (loss)</li>
+                                    <li>We trace back to see which weights caused the error</li>
+                                    <li>We adjust those weights slightly</li>
+                                    <li>Repeat thousands of times!</li>
+                                </ol>
+                                <div class="mt-3 pt-2 border-t border-gray-200 flex items-center text-xs text-gray-400">
+                                    <i class="fas fa-book mr-1"></i>
+                                    <span>Referenced from page 8-9</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chat Input -->
+                    <div class="p-4 border-t border-gray-100">
+                        <div class="flex items-center space-x-2">
+                            <input type="text" placeholder="Ask a question about this course..." class="flex-1 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-100">
+                            <button class="gradient-bg text-white w-12 h-12 rounded-xl flex items-center justify-center hover:opacity-90 transition">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                        <p class="text-xs text-gray-400 mt-2 text-center">Powered by Gemini AI • Using your API key</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- API Key Modal -->
+    <div id="apiKeyModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 gradient-bg rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-key text-white text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800">Enter Your Gemini API Key</h3>
+                <p class="text-gray-500 text-sm mt-2">Your key is stored locally and never sent to our servers</p>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">API Key</label>
+                    <input type="password" id="apiKeyInput" placeholder="AIza..." class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-100">
+                </div>
+                <a href="https://makersuite.google.com/app/apikey" target="_blank" class="text-sm text-purple-600 hover:text-purple-700 flex items-center">
+                    <i class="fas fa-external-link-alt mr-2"></i>
+                    Get your free Gemini API key
+                </a>
+                <div class="flex space-x-3 pt-2">
+                    <button onclick="closeApiKeyModal()" class="flex-1 px-4 py-3 border border-gray-200 rounded-xl text-gray-600 font-medium hover:bg-gray-50 transition">
+                        Cancel
+                    </button>
+                    <button onclick="saveApiKey()" class="flex-1 px-4 py-3 gradient-bg text-white rounded-xl font-medium hover:opacity-90 transition">
+                        Save Key
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Modal Functions
+        function openCourse() {
+            document.getElementById('courseModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('courseModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        function togglePlay() {
+            const btn = document.getElementById('playBtn');
+            const icon = btn.querySelector('i');
+            if (icon.classList.contains('fa-play')) {
+                icon.classList.remove('fa-play');
+                icon.classList.add('fa-pause');
+                icon.classList.remove('ml-1');
+            } else {
+                icon.classList.remove('fa-pause');
+                icon.classList.add('fa-play');
+                icon.classList.add('ml-1');
+            }
+        }
+
+        // API Key Functions
+        function openApiKeyModal() {
+            document.getElementById('apiKeyModal').classList.remove('hidden');
+        }
+
+        document.getElementById('apiKeyBtn').addEventListener('click', function() {
+            openApiKeyModal();
+        });
+
+        function closeApiKeyModal() {
+            document.getElementById('apiKeyModal').classList.add('hidden');
+        }
+
+        function saveApiKey() {
+            const key = document.getElementById('apiKeyInput').value;
+            if (key) {
+                localStorage.setItem('gemini_api_key', key);
+                document.getElementById('apiKeyStatus').textContent = 'Key Saved ✓';
+                document.getElementById('apiKeyBtn').classList.add('border-green-300', 'text-green-600');
+                closeApiKeyModal();
+                // Also dismiss onboarding after saving key
+                dismissOnboarding();
+            }
+        }
+
+        // Onboarding Functions
+        function dismissOnboarding() {
+            const card = document.getElementById('onboardingCard');
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(-20px)';
+            card.style.transition = 'all 0.3s ease-out';
+            setTimeout(() => {
+                card.style.display = 'none';
+            }, 300);
+            localStorage.setItem('onboarding_dismissed', 'true');
+        }
+
+        // Check if onboarding was dismissed
+        if (localStorage.getItem('onboarding_dismissed') === 'true' || localStorage.getItem('gemini_api_key')) {
+            const card = document.getElementById('onboardingCard');
+            if (card) card.style.display = 'none';
+        }
+
+        // Check for existing API key
+        if (localStorage.getItem('gemini_api_key')) {
+            document.getElementById('apiKeyStatus').textContent = 'Key Saved ✓';
+            document.getElementById('apiKeyBtn').classList.add('border-green-300', 'text-green-600');
+        }
+
+        // Close modals on escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+                closeApiKeyModal();
+            }
+        });
+
+        // Close modals on backdrop click
+        document.getElementById('courseModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        document.getElementById('apiKeyModal').addEventListener('click', function(e) {
+            if (e.target === this) closeApiKeyModal();
+        });
+    </script>
+</body>
+</html>

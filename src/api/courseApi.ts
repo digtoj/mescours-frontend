@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { UploadResponse, SummaryResponse, AskResponse } from '../types';
+import type { UploadResponse, SummaryResponse, AskResponse } from '../types';
 
 const API_BASE_URL = 'https://mescours-backend.vercel.app';
 

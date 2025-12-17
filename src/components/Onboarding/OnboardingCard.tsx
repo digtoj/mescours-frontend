@@ -1,4 +1,4 @@
-import { Rocket, Key, X, ExternalLink } from 'lucide-react';
+import { Rocket, Key, ExternalLink, X } from 'lucide-react';
 
 interface OnboardingCardProps {
   onDismiss: () => void;
@@ -21,55 +21,37 @@ export function OnboardingCard({ onDismiss, onOpenApiKeyModal }: OnboardingCardP
       </button>
 
       <div className="relative">
-        {/* Header */}
         <div className="flex items-center mb-4">
           <div className="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center mr-3">
             <Rocket className="w-5 h-5" />
           </div>
-          <h2 className="text-xl font-bold">Welcome to MesCoursAI! 🎓</h2>
+          <h2 className="text-xl font-bold">Welcome to CourseAI!</h2>
         </div>
 
-        <p className="text-purple-100 mb-6 max-w-2xl">
-          Transform your study materials into interactive learning experiences with
-          AI-powered summaries, audio explanations, and smart Q&A.
-        </p>
+        <p className="text-purple-100 mb-6 max-w-2xl">Transform your study materials into interactive learning experiences with AI-powered summaries, audio explanations, and smart Q&A.</p>
 
         {/* Steps */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div className="bg-white bg-opacity-10 rounded-xl p-4 backdrop-blur">
             <div className="flex items-center mb-2">
-              <div className="w-8 h-8 bg-white text-purple-600 rounded-full flex items-center justify-center font-bold text-sm mr-3">
-                1
-              </div>
+              <div className="w-8 h-8 bg-white text-purple-600 rounded-full flex items-center justify-center font-bold text-sm mr-3">1</div>
               <h3 className="font-semibold">Get Your API Key</h3>
             </div>
-            <p className="text-purple-100 text-sm">
-              Create a free Gemini API key from Google AI Studio. It takes less than 1 minute!
-            </p>
+            <p className="text-purple-100 text-sm">Create a free Gemini API key from Google AI Studio. It takes less than 1 minute!</p>
           </div>
-
           <div className="bg-white bg-opacity-10 rounded-xl p-4 backdrop-blur">
             <div className="flex items-center mb-2">
-              <div className="w-8 h-8 bg-white text-purple-600 rounded-full flex items-center justify-center font-bold text-sm mr-3">
-                2
-              </div>
+              <div className="w-8 h-8 bg-white text-purple-600 rounded-full flex items-center justify-center font-bold text-sm mr-3">2</div>
               <h3 className="font-semibold">Upload Course</h3>
             </div>
-            <p className="text-purple-100 text-sm">
-              Drop your PDF, slides, or notes. Our AI will process and understand your content.
-            </p>
+            <p className="text-purple-100 text-sm">Drop your PDF, slides, or notes. Our AI will process and understand your content.</p>
           </div>
-
           <div className="bg-white bg-opacity-10 rounded-xl p-4 backdrop-blur">
             <div className="flex items-center mb-2">
-              <div className="w-8 h-8 bg-white text-purple-600 rounded-full flex items-center justify-center font-bold text-sm mr-3">
-                3
-              </div>
+              <div className="w-8 h-8 bg-white text-purple-600 rounded-full flex items-center justify-center font-bold text-sm mr-3">3</div>
               <h3 className="font-semibold">Learn Smarter</h3>
             </div>
-            <p className="text-purple-100 text-sm">
-              Listen to audio summaries, read key points, and ask questions about your material.
-            </p>
+            <p className="text-purple-100 text-sm">Listen to audio summaries, read key points, and ask questions about your material.</p>
           </div>
         </div>
 
@@ -97,6 +79,16 @@ export function OnboardingCard({ onDismiss, onOpenApiKeyModal }: OnboardingCardP
           >
             I'll do this later
           </button>
+        </div>
+
+        {/* Privacy note */}
+        <div className="mt-4 flex items-center text-purple-200 text-xs">
+          <div className="w-4 h-4 flex items-center justify-center mr-2">
+            <svg width="12" height="14" viewBox="0 0 12 14" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path d="M6 0L0.75 2.25V6.75C0.75 10.3725 2.9775 12.8325 6 13.5C9.0225 12.8325 11.25 10.3725 11.25 6.75V2.25L6 0ZM6 6.75H2.25C2.25 4.68 3.93 3 6 3V6.75Z" />
+            </svg>
+          </div>
+          <span>Your API key is stored locally on your device and never sent to our servers. Your data stays private.</span>
         </div>
       </div>
     </div>

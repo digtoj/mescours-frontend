@@ -1,5 +1,5 @@
-import { FileText, Headphones, MessageSquare, Trash2 } from 'lucide-react';
-import { Course } from '../../types';
+import { FileText, Headphones, MessageSquare, Trash2, Brain } from 'lucide-react';
+import type { Course } from '../../types';
 
 interface CourseCardProps {
   course: Course;
@@ -20,14 +20,14 @@ export function CourseCard({ course, onClick, onDelete }: CourseCardProps) {
     return date.toLocaleDateString();
   };
 
-  // Get gradient based on category
+  // Get gradient based on category or random
   const getGradient = () => {
+    // These align with the mockup's look
     const gradients = [
-      'from-purple-500 to-indigo-500',
-      'from-blue-500 to-cyan-400',
-      'from-orange-400 to-pink-500',
-      'from-green-500 to-teal-400',
-      'from-red-500 to-orange-400',
+      'gradient-bg', // Using the custom class for the primary look
+      'bg-gradient-to-br from-blue-500 to-cyan-400',
+      'bg-gradient-to-br from-orange-400 to-pink-500',
+      'bg-gradient-to-br from-green-500 to-teal-400',
     ];
     const index = course.title.length % gradients.length;
     return gradients[index];
@@ -43,12 +43,12 @@ export function CourseCard({ course, onClick, onDelete }: CourseCardProps) {
   return (
     <div
       onClick={onClick}
-      className="card overflow-hidden hover:shadow-md transition cursor-pointer group"
+      className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition cursor-pointer group"
     >
       {/* Header with gradient */}
-      <div className={`h-32 bg-gradient-to-br ${getGradient()} flex items-center justify-center relative`}>
-        <FileText className="w-12 h-12 text-white opacity-50" />
-        
+      <div className={`h-32 ${getGradient()} flex items-center justify-center relative`}>
+        <Brain className="w-12 h-12 text-white opacity-50" />
+
         {/* Delete button */}
         {onDelete && (
           <button
@@ -71,7 +71,7 @@ export function CourseCard({ course, onClick, onDelete }: CourseCardProps) {
 
         <h3 className="font-semibold text-gray-800 mb-1 truncate">{course.title}</h3>
         <p className="text-sm text-gray-500 mb-4 line-clamp-2">
-          {course.content.substring(0, 100)}...
+          Introduction to the core concepts...
         </p>
 
         <div className="flex items-center justify-between">
@@ -81,14 +81,12 @@ export function CourseCard({ course, onClick, onDelete }: CourseCardProps) {
           </div>
 
           <div className="flex space-x-2">
-            {course.summary && (
-              <span
-                className="w-8 h-8 bg-green-50 rounded-full flex items-center justify-center"
-                title="Summary Ready"
-              >
-                <Headphones className="w-4 h-4 text-green-500" />
-              </span>
-            )}
+            <span
+              className={`w-8 h-8 rounded-full flex items-center justify-center ${course.summary ? 'bg-green-50' : 'bg-gray-50'}`}
+              title="Summary Ready"
+            >
+              <Headphones className={`w-4 h-4 ${course.summary ? 'text-green-500' : 'text-gray-300'}`} />
+            </span>
             <span
               className="w-8 h-8 bg-blue-50 rounded-full flex items-center justify-center"
               title="Q&A Available"

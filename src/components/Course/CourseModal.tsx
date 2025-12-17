@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { X, Play, Pause, Headphones, Lightbulb, Loader2, Volume2 } from 'lucide-react';
-import { Course } from '../../types';
+import type { Course } from '../../types';
 import { ChatInterface } from './ChatInterface';
 import { courseApi } from '../../api/courseApi';
 
@@ -14,7 +14,7 @@ interface CourseModalProps {
 export function CourseModal({ course, apiKey, onClose, onUpdate }: CourseModalProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isGeneratingSummary, setIsGeneratingSummary] = useState(false);
-  const [speechSynthesis, setSpeechSynthesis] = useState<SpeechSynthesisUtterance | null>(null);
+  // const [speechSynthesis, setSpeechSynthesis] = useState<SpeechSynthesisUtterance | null>(null);
 
   // Generate summary on first open if not exists
   useEffect(() => {
@@ -58,7 +58,7 @@ export function CourseModal({ course, apiKey, onClose, onUpdate }: CourseModalPr
       utterance.rate = 1;
       utterance.onend = () => setIsPlaying(false);
       window.speechSynthesis.speak(utterance);
-      setSpeechSynthesis(utterance);
+      // setSpeechSynthesis(utterance);
       setIsPlaying(true);
     }
   };
@@ -116,9 +116,8 @@ export function CourseModal({ course, apiKey, onClose, onUpdate }: CourseModalPr
                   <div className="flex-1">
                     <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
                       <div
-                        className={`h-full gradient-bg rounded-full transition-all ${
-                          isPlaying ? 'w-1/3' : 'w-0'
-                        }`}
+                        className={`h-full gradient-bg rounded-full transition-all ${isPlaying ? 'w-1/3' : 'w-0'
+                          }`}
                       />
                     </div>
                     <p className="text-xs text-gray-400 mt-2">

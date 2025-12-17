@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Send, Loader2, Book } from 'lucide-react';
-import { Message } from '../../types';
+import type { Message } from '../../types';
 import { courseApi } from '../../api/courseApi';
 
 interface ChatInterfaceProps {
@@ -89,11 +89,10 @@ export function ChatInterface({ courseContent, apiKey }: ChatInterfaceProps) {
             className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
           >
             <div
-              className={`max-w-[80%] rounded-2xl px-4 py-3 ${
-                message.role === 'user'
-                  ? 'bg-purple-500 text-white rounded-br-md'
-                  : 'bg-gray-100 text-gray-700 rounded-bl-md'
-              }`}
+              className={`max-w-[80%] rounded-2xl px-4 py-3 ${message.role === 'user'
+                ? 'bg-purple-500 text-white rounded-br-md'
+                : 'bg-gray-100 text-gray-700 rounded-bl-md'
+                }`}
             >
               <p className="text-sm whitespace-pre-wrap">{message.content}</p>
               {message.role === 'assistant' && (

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Course } from '../types';
+import type { Course } from '../types';
 
 const COURSES_STORAGE_KEY = 'mescours_courses';
 

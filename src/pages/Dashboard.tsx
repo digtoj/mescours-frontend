@@ -7,7 +7,7 @@ import { CourseCard } from '../components/Course/CourseCard';
 import { CourseModal } from '../components/Course/CourseModal';
 import { useApiKey } from '../hooks/useApiKey';
 import { useCourses } from '../hooks/useCourses';
-import { Course } from '../types';
+import type { Course } from '../types';
 
 export function Dashboard() {
   const { apiKey, hasApiKey, saveApiKey } = useApiKey();
@@ -72,16 +72,10 @@ export function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 font-sans">
       <Navbar hasApiKey={hasApiKey} onOpenApiKeyModal={() => setShowApiKeyModal(true)} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Error Message */}
-        {error && (
-          <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl text-red-600">
-            {error}
-          </div>
-        )}
 
         {/* Onboarding Card */}
         {showOnboarding && (
@@ -99,6 +93,13 @@ export function Dashboard() {
           </p>
         </div>
 
+        {/* Error Message */}
+        {error && (
+          <div className="mb-8 p-4 bg-red-50 border border-red-200 rounded-xl text-red-600">
+            {error}
+          </div>
+        )}
+
         {/* File Upload */}
         <div className="mb-8">
           <FileUpload
@@ -110,7 +111,7 @@ export function Dashboard() {
 
         {/* Courses Grid */}
         {courses.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             {courses.map((course) => (
               <CourseCard
                 key={course.id}
@@ -123,7 +124,7 @@ export function Dashboard() {
         )}
 
         {/* Empty State */}
-        {courses.length === 0 && (
+        {courses.length === 0 && !error && (
           <div className="text-center py-12">
             <p className="text-gray-400">No courses yet. Upload your first document above!</p>
           </div>
