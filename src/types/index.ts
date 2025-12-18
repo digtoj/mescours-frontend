@@ -1,3 +1,8 @@
+export interface Flashcard {
+  front: string;
+  back: string;
+}
+
 export interface Course {
   id: string;
   title: string;
@@ -7,7 +12,7 @@ export interface Course {
   createdAt: Date;
   summary?: string;
   keyPoints?: string[];
-  audioScript?: string;
+  flashcards?: Flashcard[];
 }
 
 export interface Message {
@@ -27,7 +32,7 @@ export interface UploadResponse {
 export interface SummaryResponse {
   summary: string;
   key_points: string[];
-  audio_script: string;
+  flashcards: Flashcard[];
 }
 
 export interface AskResponse {

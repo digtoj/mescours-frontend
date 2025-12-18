@@ -1,21 +1,26 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Navbar } from '../components/Layout/Navbar';
 import { OnboardingCard } from '../components/Onboarding/OnboardingCard';
 import { ApiKeyModal } from '../components/ApiKey/ApiKeyModal';
 import { FileUpload } from '../components/Course/FileUpload';
 import { CourseCard } from '../components/Course/CourseCard';
-import { CourseModal } from '../components/Course/CourseModal';
-import { useApiKey } from '../hooks/useApiKey';
-import { useCourses } from '../hooks/useCourses';
 import type { Course } from '../types';
 
-export function Dashboard() {
-  const { apiKey, hasApiKey, saveApiKey } = useApiKey();
-  const { courses, addCourse, updateCourse, deleteCourse } = useCourses();
+interface DashboardProps {
+  apiKey: string | null;
+  hasApiKey: boolean;
+  saveApiKey: (key: string) => void;
+  courses: Course[];
+  addCourse: (course: Omit<Course, "id" | "createdAt">) => Course;
+  updateCourse: (id: string, updates: Partial<Course>) => void;
+  deleteCourse: (id: string) => void;
+}
 
+export function Dashboard({ apiKey, hasApiKey, saveApiKey, courses, addCourse, deleteCourse }: DashboardProps) {
+  const navigate = useNavigate();
   const [showOnboarding, setShowOnboarding] = useState(true);
   const [showApiKeyModal, setShowApiKeyModal] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   // Hide onboarding if user has API key
@@ -50,8 +55,8 @@ export function Dashboard() {
       pageCount: data.pageCount,
     });
 
-    // Open the course modal
-    setSelectedCourse(newCourse);
+    // Navigate to course page
+    navigate(`/course/${newCourse.id}`);
     setError(null);
   };
 
@@ -116,7 +121,7 @@ export function Dashboard() {
               <CourseCard
                 key={course.id}
                 course={course}
-                onClick={() => setSelectedCourse(course)}
+                onClick={() => navigate(`/course/${course.id}`)}
                 onDelete={() => handleDeleteCourse(course.id)}
               />
             ))}
@@ -137,19 +142,6 @@ export function Dashboard() {
         onClose={() => setShowApiKeyModal(false)}
         onSave={handleSaveApiKey}
       />
-
-      {selectedCourse && (
-        <CourseModal
-          course={selectedCourse}
-          apiKey={apiKey}
-          onClose={() => setSelectedCourse(null)}
-          onUpdate={(updates) => {
-            updateCourse(selectedCourse.id, updates);
-            // Update local state too
-            setSelectedCourse({ ...selectedCourse, ...updates });
-          }}
-        />
-      )}
     </div>
   );
 }

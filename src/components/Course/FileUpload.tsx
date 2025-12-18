@@ -39,6 +39,14 @@ export function FileUpload({ apiKey, onUploadSuccess, onError }: FileUploadProps
   };
 
   const handleFile = async (file: File) => {
+    // 10MB limit
+    const MAX_FILE_SIZE = 10 * 1024 * 1024;
+
+    if (file.size > MAX_FILE_SIZE) {
+      onError('File is too large. Maximum size is 10MB.');
+      return;
+    }
+
     // Check if it's an image and we need API key
     const isImage = file.type.startsWith('image/');
     if (isImage && !apiKey) {
@@ -78,11 +86,10 @@ export function FileUpload({ apiKey, onUploadSuccess, onError }: FileUploadProps
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
       onClick={() => fileInputRef.current?.click()}
-      className={`border-2 border-dashed rounded-2xl p-12 text-center cursor-pointer bg-white transition-colors ${
-        isDragging
+      className={`border-2 border-dashed rounded-2xl p-12 text-center cursor-pointer bg-white transition-colors ${isDragging
           ? 'border-purple-400 bg-purple-50'
           : 'border-gray-300 hover:border-purple-400'
-      }`}
+        }`}
     >
       <input
         ref={fileInputRef}
